@@ -18,13 +18,15 @@ export interface TextToSpeechModel {
   label: string;
   providerName: string;
   languages: readonly LangCode[];
+  /** True for voices not built for the language (borrowed or robotic). Shown to learners. */
+  experimental?: boolean;
   /** Everything that changes the sound (model + voice). Used as part of the cache key. */
   cacheIdentity: string;
   synthesize(request: SynthesisRequest, signal?: AbortSignal): Promise<SynthesisResult>;
 }
 
 /** The safe subset sent to the browser: no keys, no voice ids. */
-export type TtsModelInfo = { id: string; label: string; providerName: string };
+export type TtsModelInfo = { id: string; label: string; providerName: string; experimental: boolean };
 
 export class TtsProviderError extends Error {
   constructor(

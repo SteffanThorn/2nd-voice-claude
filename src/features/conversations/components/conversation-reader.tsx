@@ -133,6 +133,7 @@ export function ConversationReader({ lines, ttsModels }: { lines: ResolvedLine[]
                 {ttsModels.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.label}
+                    {m.experimental ? " (experimental)" : ""}
                   </option>
                 ))}
               </select>
@@ -157,6 +158,11 @@ export function ConversationReader({ lines, ttsModels }: { lines: ResolvedLine[]
           <p className="mt-2 text-xs text-muted">
             AI-generated audio{currentModel ? ` (${currentModel.label})` : ""}. Pronunciation may contain errors.
           </p>
+          {currentModel?.experimental && (
+            <p className="mt-1 text-xs font-medium text-warn">
+              ⚠️ Experimental: this isn&apos;t a Māori voice. Use it for comparison only, not as a model to copy.
+            </p>
+          )}
           {audioError && (
             <p role="alert" className="mt-2 text-sm text-warn">
               {audioError}

@@ -12,6 +12,15 @@ Goal: audio from recognised AI speech models that support te reo Māori, with le
 | Microsoft Azure Speech | No `mi-NZ` text-to-speech or speech-to-text locale | ❌ |
 | Meta MMS-TTS | No public `mms-tts-mri` checkpoint found; the family is CC-BY-NC (non-commercial) anyway | ❌ |
 
+### Experimental voices added for comparison (2026-11-17)
+
+| Voice | How it handles Māori | Cost / licence |
+|---|---|---|
+| **Google Cloud TTS** (`google:<lang>`) | No Māori voice exists, so it borrows another language's voice (default `es-ES`; try `it-IT`, `id-ID`). Expect errors on wh, initial ng and vowel length | Free monthly tier (check current limits on Google's pricing page); needs a Google Cloud API key |
+| **eSpeak NG** (`espeak:mi`) | Has its own Māori rule set (wh→f, ng→ŋ, macrons→long vowels). Robotic; some rules are off (e.g. it rendered "koe" as /kwe/) | Free; runs inside the app as WebAssembly (`espeak-ng` npm package). **GPL-3.0**: server-side only; check obligations before commercial launch |
+
+Both are labelled "(experimental)" in the voice switcher, with a warning that they aren't Māori voices.
+
 **Important:** "language supported" ≠ "good Māori pronunciation". Every model must be checked by a fluent speaker (vowel length/macrons, `wh`, `ng`, rhythm) before learners rely on it. The UI labels all audio "AI-generated · may contain errors".
 
 ## Sources

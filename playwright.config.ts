@@ -15,6 +15,8 @@ export default defineConfig({
     command: "npx next build && npx next start -p 3210",
     url: "http://localhost:3210",
     reuseExistingServer: false,
+    // eSpeak needs no key, so e2e tests can exercise real audio playback.
+    env: { ESPEAK_NG_ENABLED: "true" },
     timeout: 300_000,
   },
 });

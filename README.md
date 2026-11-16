@@ -43,6 +43,10 @@ Copy `.env.example` to `.env.local` and fill it in. Never commit `.env.local`.
 
 | Variable | Needed for |
 |---|---|
-| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` | AI audio (ElevenLabs v4 / v3). Without them, audio controls are hidden |
+| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` | AI audio (ElevenLabs v4 / v3). Without any voice configured, audio controls are hidden |
+| `GOOGLE_TTS_API_KEY` (+ optional `GOOGLE_TTS_LANGUAGE_CODE`, `GOOGLE_TTS_VOICE_NAME`) | **Experimental** Google Cloud voice: reads Māori with a borrowed voice (Spanish by default) |
+| `ESPEAK_NG_ENABLED=true` | **Experimental** eSpeak NG voice: free, built-in Māori rules, robotic. No key needed |
+
+Restart `npm run dev` after changing `.env.local`. For a production build, these must be set **at build time** (the voice list is baked into pre-built pages).
 
 Generated audio is cached in `.cache/tts/` (git-ignored) during local development. See [docs/tts-provider-research.md](docs/tts-provider-research.md) for which speech providers support Māori.

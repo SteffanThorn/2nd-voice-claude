@@ -8,6 +8,8 @@ import "server-only"; // build fails if this file is ever imported into browser 
 
 import type { LangCode } from "@/features/content/types";
 import { createElevenLabsModel } from "./elevenlabs";
+import { createEspeakModel } from "./espeak";
+import { createGoogleModel } from "./google";
 import type { TextToSpeechModel, TtsModelInfo } from "./types";
 
 export function getTtsModels(env: NodeJS.ProcessEnv = process.env): TextToSpeechModel[] {
@@ -23,6 +25,22 @@ export function getTtsModels(env: NodeJS.ProcessEnv = process.env): TextToSpeech
     );
   }
 
+  // Experimental (listed after the main voices so they're never the default).
+  const googleKey = env.GOOGLE_TTS_API_KEY?.trim();
+  if (googleKey) {
+    models.push(
+      createGoogleModel({
+        apiKey: googleKey,
+        voiceLanguageCode: env.GOOGLE_TTS_LANGUAGE_CODE?.trim() || "es-ES",
+        voiceName: env.GOOGLE_TTS_VOICE_NAME?.trim() || undefined,
+        languages: ["mi"],
+      }),
+    );
+  }
+  if (env.ESPEAK_NG_ENABLED?.trim() === "true") {
+    models.push(createEspeakModel());
+  }
+
   // Future: Papa Reo (Te Hiku Media) once API access is granted.
 
   return models;
@@ -33,5 +51,5 @@ export function getTtsModelsFor(lang: LangCode, env: NodeJS.ProcessEnv = process
 }
 
 export function toPublicInfo(m: TextToSpeechModel): TtsModelInfo {
-  return { id: m.id, label: m.label, providerName: m.providerName };
+  return { id: m.id, label: m.label, providerName: m.providerName, experimental: m.experimental ?? false };
 }

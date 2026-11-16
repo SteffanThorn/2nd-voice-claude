@@ -18,6 +18,7 @@
 1d. ⬜ Add ElevenLabs key and check real Māori output with a fluent speaker · apply for Papa Reo access · production audio cache (Supabase Storage) · rate limiting
 1e. ✅ 42 AI-created conversations (14 topics × Beginner 1 / Beginner 2 / Intermediate 1), per-line origin + confidence
 1f. ✅ Gamified pathways: level path with completed/available/locked states, XP, day streak, topic progress, completion celebration (browser-stored progress); Playwright e2e tests
+1f2. ✅ Experimental comparison voices: Google Cloud (borrowed voice) and eSpeak NG (Māori rules); real browser playback tested
 1g. ⬜ Expert review of AI content (start with lines < 75% confidence) · exercises that gate level completion · accounts so progress syncs across devices
 2. ⬜ Supabase project + client helpers (server / browser / admin)
 3. ⬜ Migration 1: languages, profiles, roles, user_languages, RLS

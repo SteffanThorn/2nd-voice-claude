@@ -30,6 +30,7 @@ export function createElevenLabsModel(opts: Options): TextToSpeechModel {
     label: opts.label,
     providerName: "ElevenLabs",
     languages: opts.languages,
+    experimental: false,
     cacheIdentity: `elevenlabs:${opts.modelId}:${opts.voiceId}:${OUTPUT_FORMAT}`,
 
     async synthesize({ text, lang }, signal) {

@@ -1,5 +1,22 @@
 # Development Log
 
+## 2026-11-17: Step 5: experimental Google and eSpeak voices
+
+**Decision (project owner):** add free or low-cost general TTS options for side-by-side comparison; the owner will listen and judge.
+
+**Built**
+- `services/tts/google.ts`: Google Cloud TTS REST adapter. It borrows a voice from another language (default `es-ES`, configurable), returns MP3 decoded from base64, and authenticates with `X-Goog-Api-Key`.
+- `services/tts/espeak.ts`: eSpeak NG via the `espeak-ng` npm package (WebAssembly, pinned 1.0.2). It uses the built-in Māori voice and outputs WAV. Text is passed in a file (`-f`), never as a command-line argument. Marked `serverExternalPackages` in next.config so its .wasm loads at runtime.
+- `TextToSpeechModel.experimental`: experimental voices are listed after the main voices, shown with an "(experimental)" suffix and a warning that they aren't Māori voices.
+- `.env.example`: `GOOGLE_TTS_*` and `ESPEAK_NG_ENABLED`.
+- Playwright starts its test server with `ESPEAK_NG_ENABLED=true`.
+
+**Tested:** 48 unit tests. These include eSpeak generating real Māori WAV audio, text starting with "-" staying text, deterministic output (safe to cache), the Google request format with a mocked network, and no key leakage. 14 Playwright tests (desktop and mobile) cover the voice switcher with the experimental label, **a real line actually playing to the end in the browser**, the remembered voice choice, and "play conversation" advancing. On a running production server: eSpeak returns 200 WAV then a cache HIT; a fake Google key reaches Google, which returns 400, and the learner sees a generic 502.
+
+**Not tested:** a successful Google call (needs a real key). The owner will check by ear.
+
+**Learned:** in a production build the voice list is decided at **build time** (pages are pre-rendered), so keys must be present when building. Vercel provides them at build. In `npm run dev`, a restart is enough.
+
 ## 2026-11-17: Step 4: content for every topic + gamified pathways
 
 **Decision (project owner):** fill all topics from beginner to intermediate with AI-created content, labelled per sentence "AI-created with xx% confidence of language logic". This replaces the earlier "sample, hidden in production" approach: the content is visible but marked **Unverified**, with a notice on every conversation.
