@@ -4,14 +4,18 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { VerificationBadge } from "@/components/verification-badge";
 import { DIFFICULTY_LABELS } from "@/features/content/types";
+import { CompleteLevel } from "@/features/conversations/components/complete-level";
 import { ConversationReader } from "@/features/conversations/components/conversation-reader";
+import { LevelGate } from "@/features/conversations/components/level-gate";
 import {
   getAllConversationParams,
   getConversation,
   getConversationVocabulary,
+  getConversationsForTopic,
   resolveLines,
 } from "@/features/conversations/repository";
 import { TOPICS, getTopic } from "@/features/conversations/topics";
+import { conversationKey, xpForConversation } from "@/features/progress/rules";
 import { getTtsModelsFor, toPublicInfo } from "@/services/tts/registry";
 
 export function generateStaticParams() {
@@ -52,18 +56,23 @@ async function ConversationContent({
   // Only models that are configured (have API keys) AND support Māori.
   const ttsModels = getTtsModelsFor("mi").map(toPublicInfo);
 
+  // Where this conversation sits in its topic's pathway.
+  const pathway = getConversationsForTopic(topic.slug);
+  const index = pathway.findIndex((c) => c.slug === conversation.slug);
+  const link = (c: (typeof pathway)[number]) => ({
+    href: `/conversations/${topic.slug}/${c.slug}`,
+    title: c.title,
+    level: c.level,
+  });
+  const previous = index > 0 ? link(pathway[index - 1]) : undefined;
+  const next = index < pathway.length - 1 ? link(pathway[index + 1]) : undefined;
+  const pathwayKeys = pathway.map((c) => conversationKey(topic.slug, c.slug));
+
   return (
     <article>
       <Link href={`/conversations/${topic.slug}`} className="text-sm text-muted hover:text-foreground">
         ← {topic.name}
       </Link>
-
-      {conversation.isSample && (
-        <div role="note" className="mt-4 rounded-lg border border-warn/40 bg-warn-soft p-3 text-sm text-warn">
-          <strong>Sample content for development.</strong> This conversation was written by AI to build the screen and
-          has not been checked by a Māori language reviewer. Don&apos;t learn from it.
-        </div>
-      )}
 
       <header className="mt-4">
         <p className="text-sm text-muted">
@@ -74,6 +83,14 @@ async function ConversationContent({
         </h1>
         <p className="mt-2 text-muted">{conversation.description}</p>
       </header>
+
+      <LevelGate pathwayKeys={pathwayKeys} index={index} previous={previous}>
+      {conversation.verificationStatus !== "verified" && (
+        <div role="note" className="mt-4 rounded-lg border border-warn/40 bg-warn-soft p-3 text-sm text-warn">
+          Created by AI and <strong>not yet reviewed by a Māori language expert</strong>. Each line shows the AI&apos;s own
+          confidence in its language logic. Treat lower scores with extra care.
+        </div>
+      )}
 
       <section className="mt-6" aria-label="Dialogue">
         <ConversationReader lines={lines} ttsModels={ttsModels} />
@@ -101,6 +118,14 @@ async function ConversationContent({
           </ul>
         </section>
       )}
+
+      <CompleteLevel
+        conversationKey={conversationKey(topic.slug, conversation.slug)}
+        xp={xpForConversation(conversation.lines.length)}
+        next={next}
+        topicHref={`/conversations/${topic.slug}`}
+      />
+      </LevelGate>
 
       <section className="mt-10 border-t border-border pt-4 text-sm text-muted">
         <h2 className="font-medium text-foreground">Source</h2>

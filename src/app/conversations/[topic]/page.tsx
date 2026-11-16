@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { VerificationBadge } from "@/components/verification-badge";
 import { DIFFICULTY_LABELS } from "@/features/content/types";
+import { TopicPathway, type PathwayLevel } from "@/features/conversations/components/topic-pathway";
 import { getConversationsForTopic } from "@/features/conversations/repository";
 import { TOPICS, getTopic } from "@/features/conversations/topics";
+import { conversationKey, xpForConversation } from "@/features/progress/rules";
 
 // [topic] in the folder name is a *dynamic segment*: one file serves
 // /conversations/home, /conversations/work, and so on.
@@ -34,7 +35,17 @@ async function TopicContent({ params }: Pick<PageProps<"/conversations/[topic]">
   const { topic: slug } = await params;
   const topic = getTopic(slug);
   if (!topic) notFound();
-  const conversations = getConversationsForTopic(topic.slug);
+
+  const levels: PathwayLevel[] = getConversationsForTopic(topic.slug).map((c) => ({
+    key: conversationKey(topic.slug, c.slug),
+    href: `/conversations/${topic.slug}/${c.slug}`,
+    level: c.level,
+    title: c.title,
+    description: c.description,
+    difficultyLabel: DIFFICULTY_LABELS[c.difficulty],
+    lineCount: c.lines.length,
+    xp: xpForConversation(c.lines.length),
+  }));
 
   return (
     <>
@@ -42,34 +53,14 @@ async function TopicContent({ params }: Pick<PageProps<"/conversations/[topic]">
         ← All topics
       </Link>
       <h1 className="mt-3 text-2xl font-semibold tracking-tight">{topic.name}</h1>
-      <p className="mt-2 text-muted">{topic.description}</p>
+      <p className="mt-1 text-muted">{topic.description}</p>
 
-      {conversations.length === 0 ? (
-        // Honest empty state: nothing has been written and verified yet.
+      {levels.length === 0 ? (
         <div className="mt-8 rounded-xl border border-dashed border-border p-6 text-center text-muted">
           No conversations have been published for this topic yet.
         </div>
       ) : (
-        <ol className="mt-6 space-y-3">
-          {conversations.map((c) => (
-            <li key={c.slug}>
-              <Link
-                href={`/conversations/${topic.slug}/${c.slug}`}
-                className="block rounded-xl border border-border bg-surface p-4 transition-colors hover:border-accent"
-              >
-                <p className="text-xs font-medium text-muted">
-                  Level {c.level} · {DIFFICULTY_LABELS[c.difficulty]}
-                </p>
-                <h2 className="mt-1 flex flex-wrap items-center gap-2 font-medium">
-                  {c.title}
-                  <VerificationBadge status={c.verificationStatus} />
-                  {c.isSample && <span className="text-xs text-warn">Sample</span>}
-                </h2>
-                <p className="mt-1 text-sm text-muted">{c.description}</p>
-              </Link>
-            </li>
-          ))}
-        </ol>
+        <TopicPathway topicName={topic.name} topicIcon={topic.icon} levels={levels} />
       )}
     </>
   );

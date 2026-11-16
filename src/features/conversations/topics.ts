@@ -14,23 +14,25 @@ export type Topic = {
   slug: string;
   name: string;
   description: string;
+  /** Emoji shown on topic cards and the pathway header. */
+  icon: string;
 };
 
 export const TOPICS: readonly Topic[] = [
-  { slug: "everyday-life", name: "Everyday life", description: "Greetings, routines and the small talk of a normal day." },
-  { slug: "home", name: "Home", description: "Around the house: rooms, chores, meals and family routines." },
-  { slug: "family", name: "Family", description: "Talking about and with whānau: relationships, news and plans." },
-  { slug: "work", name: "Work", description: "Colleagues, meetings, tasks and the workplace." },
-  { slug: "sports", name: "Sports", description: "Playing, watching and talking about sport." },
-  { slug: "leisure", name: "Leisure", description: "Hobbies, weekends, entertainment and free time." },
-  { slug: "cafes-and-restaurants", name: "Cafés and restaurants", description: "Ordering, paying and chatting over food and drink." },
-  { slug: "shopping", name: "Shopping", description: "Asking for things, prices and making choices." },
-  { slug: "travel", name: "Travel", description: "Directions, transport, places and plans." },
-  { slug: "meeting-people", name: "Meeting people", description: "Introductions, where you're from and getting to know someone." },
-  { slug: "conversations-with-children", name: "Conversations with children", description: "Encouraging, instructing and playing with tamariki." },
-  { slug: "conversations-with-elderly-people", name: "Conversations with elderly people", description: "Respectful conversation with kaumātua and older relatives." },
-  { slug: "health-and-wellbeing", name: "Health and wellbeing", description: "How you're feeling, appointments and looking after yourself." },
-  { slug: "social-situations", name: "Social situations", description: "Gatherings, invitations, celebrations and events." },
+  { slug: "everyday-life", name: "Everyday life", description: "Greetings, routines and the small talk of a normal day.", icon: "☀️" },
+  { slug: "home", name: "Home", description: "Around the house: rooms, chores, meals and family routines.", icon: "🏠" },
+  { slug: "family", name: "Family", description: "Talking about and with whānau: relationships, news and plans.", icon: "👨‍👩‍👧" },
+  { slug: "work", name: "Work", description: "Colleagues, meetings, tasks and the workplace.", icon: "💼" },
+  { slug: "sports", name: "Sports", description: "Playing, watching and talking about sport.", icon: "🏉" },
+  { slug: "leisure", name: "Leisure", description: "Hobbies, weekends, entertainment and free time.", icon: "🎨" },
+  { slug: "cafes-and-restaurants", name: "Cafés and restaurants", description: "Ordering, paying and chatting over food and drink.", icon: "☕" },
+  { slug: "shopping", name: "Shopping", description: "Asking for things, prices and making choices.", icon: "🛍️" },
+  { slug: "travel", name: "Travel", description: "Directions, transport, places and plans.", icon: "✈️" },
+  { slug: "meeting-people", name: "Meeting people", description: "Introductions, where you're from and getting to know someone.", icon: "👋" },
+  { slug: "conversations-with-children", name: "Conversations with children", description: "Encouraging, instructing and playing with tamariki.", icon: "🧒" },
+  { slug: "conversations-with-elderly-people", name: "Conversations with elderly people", description: "Respectful conversation with kaumātua and older relatives.", icon: "👵" },
+  { slug: "health-and-wellbeing", name: "Health and wellbeing", description: "How you're feeling, appointments and looking after yourself.", icon: "💚" },
+  { slug: "social-situations", name: "Social situations", description: "Gatherings, invitations, celebrations and events.", icon: "🎉" },
 ];
 
 export function getTopic(slug: string): Topic | undefined {

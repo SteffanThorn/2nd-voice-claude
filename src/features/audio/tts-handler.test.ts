@@ -11,6 +11,7 @@ const sentence: Sentence = {
   translation: "Hello",
   vocabularyIds: [],
   verificationStatus: "unverified",
+  origin: { type: "ai_generated", model: "test", confidence: 90 },
 };
 
 function memoryCache(): AudioCache & { store: Map<string, SynthesisResult> } {

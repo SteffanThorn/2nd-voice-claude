@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { originLabel, type ContentOrigin } from "@/features/content/types";
 import type { TtsModelInfo } from "@/services/tts/types";
 import type { ResolvedLine } from "../repository";
 
@@ -205,6 +206,7 @@ export function ConversationReader({ lines, ttsModels }: { lines: ResolvedLine[]
                       {sentence.text}
                     </p>
                     {visible && <p className="mt-1 text-sm text-muted">{sentence.translation}</p>}
+                    <OriginNote origin={sentence.origin} />
                     {!showAll && (
                       <button
                         type="button"
@@ -223,5 +225,24 @@ export function ConversationReader({ lines, ttsModels }: { lines: ResolvedLine[]
         })}
       </ol>
     </div>
+  );
+}
+
+/** Small label under each line saying where it came from. */
+function OriginNote({ origin }: { origin: ContentOrigin }) {
+  const tone =
+    origin.type !== "ai_generated" ? "text-muted" : origin.confidence >= 85 ? "text-accent" : origin.confidence >= 75 ? "text-muted" : "text-warn";
+  return (
+    <p
+      className={`mt-1 text-[11px] ${tone}`}
+      title={
+        origin.type === "ai_generated"
+          ? `Self-assessed by the AI that wrote it (${origin.model}). Not a review by a Māori language expert.`
+          : undefined
+      }
+    >
+      {origin.type === "ai_generated" ? "🤖 " : ""}
+      {originLabel(origin)}
+    </p>
   );
 }

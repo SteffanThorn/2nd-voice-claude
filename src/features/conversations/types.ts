@@ -18,6 +18,4 @@ export type Conversation = {
   learningNotes: string[];
   provenance: Provenance[];
   verificationStatus: VerificationStatus;
-  /** Sample content exists only to build the UI and is hidden in production. */
-  isSample: boolean;
 };

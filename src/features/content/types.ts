@@ -39,7 +39,29 @@ export type Sentence = {
   translation: string;
   vocabularyIds: string[];
   verificationStatus: VerificationStatus;
+  origin: ContentOrigin;
 };
+
+/**
+ * Who or what produced a piece of content. Shown to learners next to it.
+ * For AI content, `confidence` (0–100) is the AI's own estimate of how
+ * sound the language logic is. It is NOT a review by a Māori language expert.
+ */
+export type ContentOrigin =
+  | { type: "ai_generated"; model: string; confidence: number }
+  | { type: "human"; author: string }
+  | { type: "source"; citation: string; url?: string };
+
+export function originLabel(origin: ContentOrigin): string {
+  switch (origin.type) {
+    case "ai_generated":
+      return `AI-created with ${origin.confidence}% confidence of language logic`;
+    case "human":
+      return `Written by ${origin.author}`;
+    case "source":
+      return `Source: ${origin.citation}`;
+  }
+}
 
 export type VocabularyItem = {
   id: string;

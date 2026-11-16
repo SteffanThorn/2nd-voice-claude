@@ -10,6 +10,6 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.ts"], // e2e tests in tests/e2e run with Playwright
   },
 });

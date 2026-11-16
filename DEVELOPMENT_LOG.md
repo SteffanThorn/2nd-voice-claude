@@ -1,5 +1,27 @@
 # Development Log
 
+## 2026-11-17: Step 4: content for every topic + gamified pathways
+
+**Decision (project owner):** fill all topics from beginner to intermediate with AI-created content, labelled per sentence "AI-created with xx% confidence of language logic". This replaces the earlier "sample, hidden in production" approach: the content is visible but marked **Unverified**, with a notice on every conversation.
+
+**Content** (`src/features/conversations/content/`)
+- 42 conversations: 14 topics × 3 levels (Beginner 1, Beginner 2, Intermediate 1). 286 distinct sentences, 306 vocabulary records, learning notes per conversation.
+- Confidence (the AI's self-estimate): average 82.6%; 116 lines ≥ 85%, 119 lines 75–84%, 51 lines < 75%. The lowest are idioms and passive or complex structures. These should be reviewed first.
+- A compact authoring format (`define.ts`) is turned by `build.ts` into normalised records. Identical Māori sentences are stored once (a conflict on translation fails the build), and vocabulary is linked to sentences automatically by whole-word matching that respects macrons.
+- `Sentence.origin` (ai_generated / human / source) is shown under every line; the colour reflects confidence.
+- Removed: `sample-data.ts`, `isSample`, `SHOW_SAMPLE_CONTENT`.
+
+**Gamification**
+- Topic page: header with icon, XP earned/possible and a progress bar; a vertical level path with nodes (✓ completed, pulsing = next, 🔒 locked) and level cards (difficulty, lines, XP).
+- Conversations page: XP / day-streak / levels-done stats; topic cards with emoji and per-topic progress.
+- Conversation page: `LevelGate` (lock screen linking to the required level) and `CompleteLevel` (+XP, streak, celebration, "Next level" link). Completion is a button for now; exercises will gate it later.
+- Rules in `features/progress/rules.ts` (pure, tested): sequential unlock within one pathway only, XP = 20 + 5 × lines, no double XP, streak counting.
+- Store in `features/progress/store.ts`: localStorage via `useSyncExternalStore`, synced across tabs, in-memory fallback. **Temporary until accounts.**
+
+**Fixes:** "Kia ora!" was used as both "Hello!" and "Thanks!", which the duplicate check caught; one line was changed to "Kia ora, Hōne!". `new Date()` can't run during pre-rendering, so the streak is computed only in the browser.
+
+**Tested:** 42 unit tests (content integrity, consistent meanings, game rules, audio). Lint and build are clean (78 pages). **Playwright e2e on desktop and mobile Chrome: 8/8 pass.** They cover locking, opening a locked level directly, translations, confidence labels on every line, completing → XP → streak → next unlocked, other topics unaffected, no double XP, and no horizontal scroll. Screenshots were reviewed.
+
 ## 2026-11-17: Step 3: AI audio with switchable models
 
 **Requirement:** audio from recognised AI models that support Māori; learners can switch models.

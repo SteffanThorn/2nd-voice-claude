@@ -2,7 +2,7 @@
 
 A multilingual language-learning platform built around structured conversations, grammar, vocabulary, memory associations and spaced repetition. The first language is **te reo Māori**. Mandarin Chinese and Spanish are planned.
 
-> **Status:** early foundation. The Conversations section lists topics; no lessons yet. Current focus is **topics/conversations**, with grammar deferred. See [ROADMAP.md](ROADMAP.md).
+> **Status:** early foundation. The Conversations section has 14 topics × 3 levels (Beginner 1 → Intermediate 1) as a gamified pathway, with AI-created, clearly labelled content and optional AI audio. Grammar is deferred. See [ROADMAP.md](ROADMAP.md).
 
 ## Documentation
 
@@ -19,6 +19,12 @@ A multilingual language-learning platform built around structured conversations,
 
 Next.js (App Router) · React · TypeScript · Tailwind CSS · Supabase (PostgreSQL, Auth, Storage) · Vercel
 
+## Content status
+
+All conversations are **AI-created (Claude Opus 5.5)** and **unverified**. Each line shows "AI-created with xx% confidence of language logic". That number is the AI's own estimate, not an expert review. Content lives in `src/features/conversations/content/`. A Māori language expert should review it before anyone relies on it.
+
+Learner progress (XP, streaks, unlocked levels) is stored **in the browser** until accounts exist.
+
 ## Setup
 
 Requires Node.js 20 or later.
@@ -26,7 +32,8 @@ Requires Node.js 20 or later.
 ```bash
 npm install        # install dependencies
 npm run dev        # start the dev server at http://localhost:3000
-npm test           # run automated tests (Vitest)
+npm test           # unit tests (Vitest)
+npm run test:e2e   # browser tests (Playwright; builds the app and serves it on port 3210)
 npm run lint       # check code style and common mistakes
 npm run build      # production build (also type-checks)
 ```
@@ -37,9 +44,5 @@ Copy `.env.example` to `.env.local` and fill it in. Never commit `.env.local`.
 | Variable | Needed for |
 |---|---|
 | `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` | AI audio (ElevenLabs v4 / v3). Without them, audio controls are hidden |
-| `SHOW_SAMPLE_CONTENT` | Optional: show sample content in production |
 
 Generated audio is cached in `.cache/tts/` (git-ignored) during local development. See [docs/tts-provider-research.md](docs/tts-provider-research.md) for which speech providers support Māori.
-
-### Sample content
-`src/features/conversations/sample-data.ts` holds an **unverified, AI-written** sample conversation (Meeting people → First introductions). It exists only to build the UI. It shows in `npm run dev` and is **hidden in production builds**. To show it in production deliberately, set `SHOW_SAMPLE_CONTENT=true`.
